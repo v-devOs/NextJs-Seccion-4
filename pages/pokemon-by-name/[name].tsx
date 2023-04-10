@@ -1,13 +1,12 @@
-import { pokeApi } from "</api>";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
-import { Layout } from "</components/layouts>";
-import { Pokemmon, PokemonListResponse } from "</interfaces>";
 import { Button, Card, Container, Grid, Image, Text } from "@nextui-org/react";
-import { log } from "console";
+import { Pokemmon, PokemonListResponse } from "</interfaces>";
+import { Layout } from "</components/layouts>";
+import { pokeApi } from "</api>";
 
 interface Props{
   pokemon: Pokemmon
-  
+
 }
 
 const PokemonPageName: NextPage<Props> = ({ pokemon }) => {
@@ -82,13 +81,13 @@ const PokemonPageName: NextPage<Props> = ({ pokemon }) => {
 
 export const getStaticPaths: GetStaticPaths = async (ctx) => {
 
-  const { data } = await pokeApi.get<PokemonListResponse>('/pokemon?limit=151')
+  const { data }  = await pokeApi.get<PokemonListResponse>('/pokemon?limit=151')
   const { results } = data
   
   return {
     paths: results.map( ({ name }) => ({
-      params : { name}
-    })) ,
+      params : { name }
+    })),
     fallback: false
   }
 }
@@ -97,7 +96,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   
   const { name } = params as { name : string};
   const { data } = await pokeApi.get<Pokemmon>(`pokemon/${name}`)
-
+ 
   return{
     props: {
       pokemon: data
