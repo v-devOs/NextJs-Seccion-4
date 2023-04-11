@@ -3,9 +3,8 @@ import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { Button, Card, Container, Grid, Image, Text } from "@nextui-org/react";
 import confetti from 'canvas-confetti'
 import { Layout } from "</components/layouts>";
-import { localFavorites } from "</utils>";
+import { getPokemonInfo, localFavorites } from "</utils>";
 import { Pokemmon } from "</interfaces>";
-import { pokeApi } from "</api>";
 
 interface Props{
   pokemon: Pokemmon
@@ -36,8 +35,6 @@ const PokemonPage: NextPage<Props> = ({ pokemon }) => {
   useEffect(() => {
     setIsInFavorites(localFavorites.existInFavorites(pokemon.id))
   }, [])
-  
-
   
   return (
     <Layout title={pokemon.name}>
@@ -124,17 +121,10 @@ export const getStaticPaths: GetStaticPaths = async (ctx) => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   
   const { id } = params as { id : string};
-  const { data } = await pokeApi.get<Pokemmon>(`pokemon/${id}`)
-
-  const pokemon = {
-    name: data.name,
-    id: data.id,
-    sprites: data.sprites
-  }
 
   return{
     props: {
-      pokemon
+      pokemon: await getPokemonInfo( id )
     }
   }
 }
